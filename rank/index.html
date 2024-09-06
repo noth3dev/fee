@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Ranking System</title>
+    <link rel="stylesheet" href="root.css">
+    <link rel="stylesheet" href="rank.css">
+</head>
+<body>
+    <button class="main">
+        To main
+    </button>
+    <div class="tab-container">
+        <button class="tab active" data-category="speedruntime">Speedrun</button>
+        <button class="tab" data-category="alltime">All Time</button>
+        <button class="tab" data-category="default">Default</button>
+    </div>
+    <div class="top5-outter">
+        <div id="top5-container" class="top5-container"></div>
+    </div>
+
+    <div class="tab-content active" data-category="speedruntime">
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Handle</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody id="speedrun-table-body">
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+        <div class="pagination" id="speedrun-pagination"></div> <!-- Pagination controls for Speedrun -->
+    </div>
+
+    <div class="tab-content" data-category="alltime">
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Handle</th>
+                    <th>High Score</th>
+                </tr>
+            </thead>
+            <tbody id="alltime-table-body">
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+        <div class="pagination" id="alltime-pagination"></div> <!-- Pagination controls for All Time -->
+    </div>
+
+    <div class="tab-content" data-category="default">
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Handle</th>
+                    <th>Tier</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="default-table-body">
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+        <div class="pagination" id="default-pagination"></div> <!-- Pagination controls for Default -->
+    </div>
+
+<script src="rank.js"></script>
+</body>
+</html>

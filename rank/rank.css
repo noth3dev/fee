@@ -1,0 +1,135 @@
+body {
+    font-family: Pretendard;
+    background-color: var(--background_color);
+    color: white;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.tab-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 20px; /* Add spacing between tabs */
+    position: sticky;
+    top: 0;
+    background: rgba(217, 217, 217, 0.01); backdrop-filter: blur(43.90px);
+    z-index: 10;
+    width: 100%;
+}
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    background: transparent;
+    color: #aaa;
+    font-size: 16px;
+    font-weight: normal;
+    border: none;
+    outline: none;
+    transition: color 0.3s, font-size 0.3s;
+}
+.tab:hover {
+    color: #fff; /* Hover effect for non-selected tabs */
+}
+.tab.active {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+}
+.tab-content {
+    display: none;
+    width: 100%; /* Ensure content spans full width */
+    margin-top: -10px;
+}
+.tab-content.active {
+    display: block;
+}
+.top5-outter {
+    width: 100%;
+    margin-bottom: 20px;
+    align-items: center;
+    display: flex;
+}
+.top5-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 50%;
+    transform: translateX(-25%);
+    height: 70vh;
+}
+.top5-container .top {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    color: var(--sub_text);
+    font-weight: lighter;
+}
+.top5-container .top.first-place {
+    font-size: 24px;
+    color: var(--main_text);
+    font-weight: bold;
+}
+.top5-container .top .rank,
+.top5-container .top .score,
+.top5-container .top .handle,
+.top5-container .top .level {
+    margin-right: 20px;
+    font-size: 18px;
+}
+table {
+    width: 100%; /* Set table width to full width */
+    border-collapse: collapse;
+    background-color: var(--background_color);
+}
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--sub_text);
+}
+th {
+    background-color: var(--background_color);
+}
+tr {
+    transition: 0.2s ease-in-out;
+}
+tr:hover {
+    background-color: #333;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+.pagination a {
+    color: var(--main_text);
+    padding: 8px 16px;
+    margin: 0 4px;
+    border-radius: 4px;
+    transition: 0.3s ease-in-out;
+    background-color: var(--background_color);
+}
+.pagination a.active {
+    background-color: var(--main_text);
+    color: var(--background_color);
+}
+.pagination a:hover:not(.active) {
+    background-color: #555;
+}
+#userSearch{
+    background:transparent;
+    color: var(--main_text);
+    border: none;
+}
+.main{
+    background-color: var(--background_color);
+    color: var(--main_text);
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+}

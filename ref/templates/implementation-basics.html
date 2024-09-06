@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementation Basics</title>
+    <link rel="stylesheet" href="root.css">
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/material-darker.min.css">
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="icon" type="image/x-icon" href="../static/asset/FAVICON.svg">
+    <style>
+        .back-button {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: #555;
+        }
+        .video{
+            margin-left: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="reference-section">
+            <div class="referencetitle">
+                <img src="../static/asset/logo_casual.svg" width="16px">
+                <span id="reference-title">이러저러한 이름</span>
+            </div>
+            <div class="referencetitlesource">
+                <span id="reference-source">이러저러한 출처</span>
+            </div>
+            <hr>
+            <div class="referenceintitle">문제<br>
+                <span id="reference-description">이러저러하고 이러저러한 문제이다</span>
+            <video width="360" height="640" controls style="margin-left: 60px; margin-top: 20px; margin-bottom: 20px;">
+                <source src="video.mp4" type="video/mp4">
+                <source src="video.ogg" type="video/ogg">
+            </video>
+            <span id="reference-description">이러저러하고 이러저러한 문제이다</span>
+        
+        </div>
+            
+            <div class="referenceintitle">입력<br>
+                <span id="reference-input-format">이러저러한 입력이 이러저러한 형식으로 들어온다</span>
+            </div>
+            <div class="referenceintitle">출력<br>
+                <span id="reference-output-format">이러저러한 출력이 이러저러한 형식으로 나간다</span>
+            </div>
+            <div class="referenceintitle">테스트케이스<br>
+                <span id="test-cases">
+                    <div class="referenceintitle" style="font-size: 14px;">테스트케이스 1:<br></div>
+                    <div class="testcase-container">
+                        <div class="testcase-display">
+                            <div class="testcase-title">예제 입력</div>
+                            <div class="testcase-content input-content">이러저러한 입력</div>
+                        </div>
+                        <div class="testcase-display">
+                            <div class="testcase-title">예제 출력</div>
+                            <div class="testcase-content output-content">깔@쌈한 출력</div>
+                        </div>
+                    </div>
+                </span>
+            </div>
+            <div class="referenceintitle">추가 조건<br>
+                <span id="reference-additional-info">
+                    이 문제에는 이러저러한 것에 대한 이러저러한 추가 조건이 있다.<br>
+                    메모리 조건은 이러저러하고, 시간 조건은 이러저러하다.
+                </span>
+            </div>
+            <hr style="margin-top: 30px;">
+            <div class="referenceintitle">정보<br>
+                <span>  
+                    <span class="difficulty" id="reference-difficulty">난이도 : ~~</span><br>
+                    <span class="source" id="reference-source-detail">출처: ~~</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="editor-section">
+            <div class="editor-area">
+                <div class="txt-head">
+                    <span id="opponent-player">Opponent player</span>
+                    <div class="right-icons">
+                        <button>Selected : </button>
+                        <select class="dropdown" id="language-selector">
+                            <option value="text/x-csrc">C</option>
+                            <option value="text/x-python">Python</option>
+                            <option value="text/x-c++src">C++</option>
+                            <option value="text/x-java">Java</option>
+                        </select>
+                        <button onclick="runCode()">Test</button>
+                        <button id="submit-all" onclick="handleSubmit()">Submit</button>
+                    </div>
+                </div>
+                <textarea id="code-editor">
+#include <stdio.h>
+
+int main()
+{
+    int a,b;
+    scanf("%d %d",&a,&b);
+    printf("%d",a+b);
+    return 0;
+}
+                </textarea>
+                <div class="floatinput"></div>
+            </div>
+            
+            <div class="console-area">
+                <div class="consolemenu-menu">
+                    <span class="consolemenu-item active">MY OUTPUT</span>
+                    <span class="consolemenu-item log">MY INPUT</span>
+                    <span class="consolemenu-item log">SUBMITTED LOG</span>
+                </div>
+                <div class="consolemenu-content">
+                    <div class="active" id="my-output">console....</div>
+                    <div id="my-input">
+                        <textarea id="input-field" placeholder="Enter input here..."></textarea>
+                    </div>
+                    <div id="results-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/material-darker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.6/addon/edit/closebrackets.min.js"></script>
+    <script src="../static/script.js"></script>
+
+    <script src="static/script.js"></script>
+</body>
+</html>

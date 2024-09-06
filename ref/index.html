@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/x-icon" href="./asset/FAVICON.svg">
+    <title>AlRef</title>
+    <link rel="stylesheet" href="root.css">
+    <style>
+        .navbar {
+            position: sticky;
+            top: 0;
+            background-color: var(--background_color);
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin-left: 15px;
+        }
+        body {
+            font-family: Pretendard;
+            margin: 0;
+            background-color: var(--background_color);
+            color: #e0e0e0;
+            scroll-behavior: smooth;
+            overflow: hidden;
+        }
+        .container::-webkit-scrollbar {
+            display: none;
+        }
+        .grid-container::-webkit-scrollbar {
+            display: none;
+        }
+        .sidebar {
+            width: 230px;
+            background-color: var(--background_color);
+            padding: 15px;
+            color: #fff;
+            height: 80vh;
+            position: fixed;
+            top: 10vh;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar h2 {
+            color: #fff;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+        .sidebar ul li a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar ul li a:hover {
+            background-color: #333;
+            color: #fff;
+        }
+        .container {
+            margin-left: 300px;
+            padding: 20px;
+            background-color: var(--background_color);
+            height: 100vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        .container h1 {
+            font-weight: 300;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .search-bar {
+            margin-bottom: 20px;
+            background-color: var(--background_color);
+            z-index: 999;
+            padding: 10px 0;
+            display: flex;
+            gap: 10px;
+            margin-top: 10vh;
+        }
+        .search-bar select, .search-bar input {
+    padding: 12px;
+    font-size: 16px;
+    background-color: var(--background_color);
+    color: #e0e0e0;
+    border: none;
+    border-radius: 5px;
+    transition: box-shadow 0.3s ease;
+}
+.search-bar input{
+    width: 90vh;
+}
+.search-bar input:focus, .search-bar select:focus {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    outline: none;
+}
+
+        .reference-group {
+            margin-bottom: 40px;
+        }
+        .reference-group h3 {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+            font-weight: 400;
+        }
+        .grid-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: nowrap;
+            padding-top: 5vh;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .grid-item {
+            background-color: var(--background_color);
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            min-width: 250px;
+            box-sizing: border-box;
+            transition: transform 0.3s ease;
+            flex: 0 0 auto;
+            transition: 0.5s ease-in-out;
+        }
+        .grid-item:hover {
+            background-color: var(--main_text);
+            color: var(--background_color);
+            border: 1px var(--positive) solid;
+        }
+        .difficulty {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .circle {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #555;
+        }
+        .filled {
+            background-color: var(--positive);
+        }
+        .recommendation {
+            color: var(--positive);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .sidebartitle {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .sidebarsubtitle {
+            font-size: 11px;
+            font-weight: 200;
+        }
+        .green{
+            color: var(--positive);
+            font-weight: 600;
+        }
+
+        .tag {
+            font-size: 14px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-right: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <img src="./asset/logo_img.svg" alt="Logo" class="logo">
+            <a href="#" class="nav-link">SHAKE IT!</a>
+            <a href="#" class="nav-link">Practice</a>
+            <a href="#" class="nav-link">Ranks</a>
+            <a href="#" class="nav-link">Open source</a>
+        </div>
+        <div class="navbar-mid">
+            <span class="nav-text"><span class="highlight-gamestat" id="game-status">joined</span> <span id="game-name" style="color: var(--positive);">[None]</span></span>
+            <span class="nav-text"><span class="highlight">999,999 Shakers</span> in Game</span>
+            <span class="nav-text"><span class="highlight-green">200 Friends</span> online</span>
+        </div>
+        <div class="navbar-right">
+            <span class="nav-text"><span class="username">Notth3dev</span> <span class="highlight-tier">B2</span></span>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <div class="sidebartitle">AlRef</div>
+        <div class="sidebarsubtitle">
+            <span class="green">Al</span>gorithm
+            <span class="green">Ref</span>erences</div>
+        <ul>
+            <li><a href="#Implementation">Implementation</a></li>
+            <li><a href="#math">Math</a></li>
+            <li><a href="#DP">DP</a></li>
+            <li><a href="#Graph">Graph</a></li>
+    </div>
+
+    <div class="container">
+        <div class="search-bar">
+            <select id="category-filter">
+                <option value="all">모든 분류</option>
+                <option value="Implementation">Implementation</option>
+                <option value="math">math</option>
+                <option value="DP">DP</option>
+                <option value="Graph">Graph</option>
+            </select>
+            <select id="difficulty-filter">
+                <option value="all">모든 난이도</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+            <input type="text" id="search" placeholder="레퍼런스를 검색하세요..." onkeyup="filterReferences()">
+        </div>
+
+        <div id="Implementation" class="reference-group">
+            <h3>Implementation</h3>
+            <div class="grid-container" id="Implementation-grid">
+                <!-- 동적으로 추가되는 레퍼런스 -->
+            </div>
+        </div>
+
+        <div id="math" class="reference-group">
+            <h3>math</h3>
+            <div class="grid-container" id="math-grid">
+                <!-- 동적으로 추가되는 레퍼런스 -->
+            </div>
+        </div>
+
+        <div id="DP" class="reference-group">
+            <h3>DP</h3>
+            <div class="grid-container" id="DP-grid">
+                <!-- 동적으로 추가되는 레퍼런스 -->
+            </div>
+        </div>
+
+        <div id="Graph" class="reference-group">
+            <h3>Graph</h3>
+            <div class="grid-container" id="Graph-grid">
+                <!-- 동적으로 추가되는 레퍼런스 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const tagAbbreviations = {
+            'Implementation': 'IM',
+            'math': 'MT',
+            'DP': 'DP',
+            'Graph': 'GR'
+        };
+
+        const references = [
+            { tag: 'Implementation', title: 'Implementation의 기초', difficulty: 1, recommendation: true, intro: '기초적인 Implementation 기법을 다룹니다.', link: 'http://127.0.0.1:5000/' },
+            { tag: 'Implementation', title: '고급 Implementation 기술', difficulty: 3, recommendation: false, intro: '고급 Implementation 기술을 다룹니다.', link: 'advanced-implementation.html' },
+            { tag: 'math', title: 'math적 사고', difficulty: 2, recommendation: true, intro: 'math적 사고를 키우기 위한 책입니다.', link: 'math-thinking.html' },
+            { tag: 'math', title: '알고리즘과 math', difficulty: 3, recommendation: false, intro: 'math과 알고리즘의 연관성을 설명합니다.', link: 'algorithm-math.html' },
+            { tag: 'DP', title: 'DP 기초', difficulty: 2, recommendation: true, intro: 'DP의 기초를 다룹니다.', link: 'dp-basics.html' },
+            { tag: 'DP', title: '고급 DP', difficulty: 3, recommendation: false, intro: '고급 DP 기술을 다룹니다.', link: 'advanced-dp.html' },
+            { tag: 'Graph', title: 'Graph 이론', difficulty: 2, recommendation: true, intro: 'Graph 이론의 기본을 설명합니다.', link: 'graph-theory.html' },
+            { tag: 'Graph', title: 'Graph 알고리즘', difficulty: 3, recommendation: true, intro: 'Graph 알고리즘에 대한 상세한 설명을 제공합니다.', link: 'graph-algorithms.html' },
+
+            { tag: 'Implementation', title: '효율적인 코드 작성법', difficulty: 2, recommendation: true, intro: '코드의 효율성을 높이는 다양한 방법을 배웁니다.', link: 'efficient-coding.html' },
+            { tag: 'math', title: '확률과 통계', difficulty: 2, recommendation: true, intro: '확률과 통계의 기초 개념을 다룹니다.', link: 'probability-statistics.html' },
+            { tag: 'DP', title: 'DP 심화', difficulty: 3, recommendation: true, intro: '복잡한 문제를 해결하기 위한 DP의 심화 내용을 다룹니다.', link: 'dp-advanced.html' },
+            { tag: 'Graph', title: 'Graph 최적화', difficulty: 3, recommendation: false, intro: 'Graph 최적화 알고리즘을 학습합니다.', link: 'graph-optimization.html' }
+        ];
+
+        function generateTag(tag, index, difficulty) {
+            const abbreviation = tagAbbreviations[tag];
+            const formattedIndex = String(index).padStart(2, '0');
+            const formattedDifficulty = String(difficulty).padStart(2, '0');
+            return `#${abbreviation}${formattedIndex}${formattedDifficulty}`;
+        }
+
+        function addReference(tag, title, difficulty, recommendation, intro, link, index) {
+            const newItem = document.createElement('div');
+            newItem.classList.add('grid-item');
+
+            let difficultyCircles = '';
+            for (let i = 0; i < 3; i++) {
+                if (i < difficulty) {
+                    difficultyCircles += `<div class="circle filled"></div>`;
+                } else {
+                    difficultyCircles += `<div class="circle"></div>`;
+                }
+            }
+
+            const tagText = generateTag(tag, index, difficulty);
+
+            newItem.innerHTML = `
+                <a href="${link}" style="text-decoration: none; color: inherit;">
+                    <div class="tag">${tagText}</div>
+                    <h2>${title}</h2>
+                    <p>${intro}</p>
+                    <div class="difficulty">${difficultyCircles}</div>
+                    <div class="recommendation">${recommendation ? '★ 추천' : ''}</div>
+
+                </a>
+            `;
+
+            document.getElementById(`${tag}-grid`).appendChild(newItem);
+        }
+
+        const categoryIndices = {
+            'Implementation': 1,
+            'math': 1,
+            'DP': 1,
+            'Graph': 1
+        };
+
+        references.forEach(ref => {
+            const currentIndex = categoryIndices[ref.tag];
+            addReference(ref.tag, ref.title, ref.difficulty, ref.recommendation, ref.intro, ref.link, currentIndex);
+            categoryIndices[ref.tag] += 1; 
+        });
+
+function filterReferences() {
+    const searchInput = document.getElementById('search').value.toLowerCase();
+    const selectedCategory = document.getElementById('category-filter').value;
+    const selectedDifficulty = document.getElementById('difficulty-filter').value;
+    const gridItems = document.getElementsByClassName('grid-item');
+
+    for (let i = 0; i < gridItems.length; i++) {
+        const item = gridItems[i];
+        const text = item.textContent || item.innerText;
+        const itemCategory = item.querySelector('.tag').textContent; 
+        const itemDifficulty = item.querySelectorAll('.difficulty .filled').length; 
+
+        const matchesSearch = text.toLowerCase().includes(searchInput);
+        const matchesCategory = selectedCategory === 'all' || itemCategory.includes(tagAbbreviations[selectedCategory]);
+        const matchesDifficulty = selectedDifficulty === 'all' || itemDifficulty === parseInt(selectedDifficulty);
+
+        if (matchesSearch && matchesCategory && matchesDifficulty) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    }
+}
+
+document.getElementById('category-filter').addEventListener('change', filterReferences);
+document.getElementById('difficulty-filter').addEventListener('change', filterReferences);
+document.getElementById('search').addEventListener('keyup', filterReferences);
+
+        document.querySelectorAll('.sidebar ul li a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+    <script src="user.js"></script>
+</body>
+</html>

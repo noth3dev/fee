@@ -1,0 +1,95 @@
+:root {
+    --background_color : #121212;
+    --main_text : #f0f8ff; 
+    --sub_text : gray;
+    --positive : #00C457;
+    --negative : #C40000;
+
+    --tier_iron : #A0A0A0;
+    --tier_bronze : #975936;
+    --tier_silver : #c0c0c0;
+    --tier_gold : #fd9900;
+    --tier_platinum : #07C0D9;
+    --tier_diamond : #9902B2;
+    --tier_emerald : #02B50A;
+    --tier_conqueror : #DA092F;
+    --tier_lumen : #4563EB;
+
+    --user_tier: var(--tier_gold); /* _Placeholder value */
+}
+
+body {
+    background-color: var(--background_color);
+    color: var(--main_text);
+    overflow-x: hidden;
+}
+
+* {
+    font-family: Pretendard;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    height: 40px;
+    width: 100%;
+    background: rgba(217, 217, 217, 0.01);
+    backdrop-filter: blur(43.90px);
+}
+
+.navbar-left,
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-right {
+    margin-right: 30px;
+}
+
+.logo {
+    margin-left: 10px;
+    width: 10px;
+    height: auto;
+    margin-right: 15px;
+}
+
+.nav-link {
+    margin-right: 18px;
+    text-decoration: none;
+    color: var(--main_text);
+    font-size: 15px;
+    font-weight: 400;
+    transition: color 0.3s ease;
+}
+.nav-text {
+	margin-left: 20px;
+	font-size: 14px;
+	color: var(--main_text);
+}
+.nav-link:hover {
+    color: var(--main_text);
+}
+
+.highlight {
+    font-weight: bold;
+    color: var(--main_text);
+}
+
+.highlight-green {
+    font-weight: bold;
+    color: var(--positive);
+}
+
+.highlight-tier {
+    font-weight: bold;
+    color: var(--user_tier);
+}
+
+
+.text-container {
+    text-align: left;
+    line-height: 1.2;
+}

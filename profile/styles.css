@@ -1,0 +1,279 @@
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px); /* Optional: Move up slightly as it fades in */
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0); /* End in its original position */
+            }
+        }
+
+        .fade-in {
+            opacity: 0; /* Start invisible */
+            animation: fadeIn 1s ease-in-out forwards; /* Duration: 1s, easing: ease-in-out */
+        }
+
+        body {
+            opacity: 0; /* Initially hide the body */
+            animation: fadeIn 1.5s ease-in-out forwards; /* Apply the fade-in animation */
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            color: white;
+            font-family: Pretendard, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Align content to the top */
+            align-items: center;
+            min-height: 100vh; /* Ensure content can expand */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: center; /* Center the content horizontally */
+            align-items: center;
+            margin-top: 50px;
+            height: 90vh;
+        }
+
+        .left-section {
+            width: 45%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .right-section {
+            width: 45%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .divider {
+            width: 2px;
+            height: 200px;
+            background: linear-gradient(to bottom right, transparent 0%, white 50%, transparent 100%);
+            transform: rotate(30deg);
+        }
+
+        .num956 {
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .Frame33 {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .Hello {
+            font-size: 24px;
+            font-weight: 400;
+        }
+
+        .Notth3devG2 {
+            color: white;
+            font-size: 48px;
+            font-weight: 700;
+        }
+
+        .Notth3devG2 .G2 {
+            color: #D99207;
+        }
+
+        .GamesPlayed {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .stats-group {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .stat {
+            text-align: center;
+            margin-left: 40px;
+            width: max-content;
+        }
+
+        .stat .value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .stat .label {
+            font-size: 12px;
+            font-weight: 300;
+            color: white;
+        }
+
+        .stat .value.rank {
+            color: var(--user_tier);
+        }
+
+        .username-tier-container {
+            display: flex;
+            align-items: center; /* Vertically center the items */
+            gap: 20px;
+        }
+
+        .addfriend {
+            width: fit-content;
+            background-color: rgba(0, 0, 0, 0);
+            border: none;
+            color: gray;
+            cursor: pointer;
+            margin-top: 10px;
+            text-align: start;
+            padding: 0;
+            transition: ease-in-out 0.3s;
+        }
+
+        .addfriend:hover {
+            color: #4563EB;
+        }
+
+        /* Horizontal Detailed User Stats */
+        .detailed-stats-section {
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 50px;
+            background-color: #222;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: space-around;
+            
+        }
+
+        .detailed-stat {
+            text-align: center;
+        }
+
+        .detailed-stat .label {
+            font-size: 16px;
+            color: #ccc;
+        }
+
+        .detailed-stat .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--user_tier);
+        }
+
+        /* Game Records List */
+        .game-records-list {
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 30px;
+            background-color: #333;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .game-record {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #444;
+            cursor: pointer;
+        }
+
+        .game-record:last-child {
+            border-bottom: none;
+        }
+
+        .game-record .game-info {
+            font-size: 18px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            
+        }
+
+        .game-record .game-info .game-type {
+            color: #ccc;
+        }
+
+        .game-record .game-info .opponent {
+            font-weight: 700;
+        }
+
+        .game-record .game-time {
+            font-size: 14px;
+            color: #888;
+            align-self: flex-end;
+        }
+
+        /* Charts */
+        .charts-section {
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .chart-container {
+            width: 48%;
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
+        /* Container for the chart and report history */
+.chart-container {
+    width: 100%;
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    margin-top: 30px;
+}
+
+/* Report History Section Styles */
+.report-history-section {
+    width: 93%;
+    background-color: #444;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 30px; /* Adds space between the chart and report history */
+    max-height: 300px;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+#report-history-list li {
+    padding: 15px 0;
+    border-bottom: 1px solid #555;
+    text-align: left;
+}
+
+#report-history-list li:last-child {
+    border-bottom: none;
+}
+
+#report-history-list li span {
+    color: var(--user_tier);
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+

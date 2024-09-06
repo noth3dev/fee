@@ -1,0 +1,891 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>IDE</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/material-darker.min.css">
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/material-darker.min.css">
+
+        
+        <link rel="stylesheet" href="../static/styles.css">
+        <link rel="icon" type="image/x-icon" href="../static/asset/FAVICON.svg">
+        <audio id="flashbangSound" src="../static/asset/flashbang.mp3" preload="auto"></audio>
+
+        <style>
+            body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer and Edge */
+            }
+
+            body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+            .background-fade-in {
+                animation: backgroundFade 2s forwards;
+            }
+
+            @keyframes backgroundFade {
+                0% {
+                    background-color: rgba(0, 0, 0, 0); /* 투명한 시작 */
+                }
+                100% {
+                    background-color: rgba(0, 0, 0, 1); /* 불투명한 검은색 */
+                }
+            }
+
+            .roundend-transition {
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+                text-align: center;
+            }
+
+            .roundend-transition.active {
+                opacity: 1;
+            }
+
+            .win {
+                font-size: 3rem;
+                color: #0f62fe;
+                text-shadow: 0 0 10px rgba(15, 98, 254, 0.5);
+                font-weight: 800;
+                display: inline-block;
+                opacity: 0;
+                animation: fadeIn 2s forwards, textAnimation 2s forwards;
+            }
+
+            .lose {
+                font-size: 3rem;
+                color: #fa4d56;
+                text-shadow: 0 0 10px rgba(250, 77, 86, 0.5);
+                font-weight: 800;
+                display: inline-block;
+                opacity: 0;
+                animation: fadeIn 2s forwards, textAnimation 2s forwards;
+            }
+
+            @keyframes fadeIn {
+                0% {
+                    opacity: 0;
+                    transform: scale(0.5);
+                }
+                100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            @keyframes textAnimation {
+                0% {
+                    transform: rotateY(0deg);
+                }
+                100% {
+                    transform: rotateY(360deg);
+                }
+            }
+
+            .roundend-transition.exit {
+        animation: fadeOut 2s forwards, textExitAnimation 2s forwards;
+    }
+
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+    }
+
+    @keyframes textExitAnimation {
+        0% {
+            transform: rotateY(0deg);
+        }
+        100% {
+            transform: rotateY(-360deg);
+        }
+    }
+
+            .letter {
+                display: inline-block;
+                opacity: 0;
+                transform: rotateY(90deg);
+                animation: letterAnimation 0.5s forwards ease-in-out;
+            }
+
+            @keyframes letterAnimation {
+                0% {
+                    opacity: 0;
+                    transform: rotateY(90deg);
+                }
+                100% {
+                    opacity: 1;
+                    transform: rotateY(0deg);
+                }
+            }
+
+            .space {
+                display: inline-block;
+                width: 0.5rem; /* 이 부분을 통해 텍스트 사이의 간격 조절 */
+            }
+            #roundendScreen {
+        z-index: 20;
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column; /* 수직 방향으로 정렬 */
+        justify-content: center; /* 수직 중앙 정렬 */
+        align-items: center; /* 수평 중앙 정렬 */
+        z-index: -1;
+        backdrop-filter: blur(10px); /* 배경 블러 효과 추가 */
+    }
+
+    .subtext {
+        font-size: 1rem;
+        color: gray;
+        margin-bottom: 1rem;
+        text-align: center; /* 텍스트를 가운데 정렬 */
+    }
+
+    .win, .lose {
+        font-size: 3rem;
+        font-weight: 800;
+        text-align: center; /* 텍스트를 가운데 정렬 */
+        display: inline-block;
+        opacity: 0;
+        animation: fadeIn 2s forwards, textAnimation 2s forwards;
+    }
+
+    .continue-button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        background-color: #000;
+        border: 3px solid #ffffff;
+        color: #fff;
+        border-radius: 25px;
+        cursor: pointer;
+        text-transform: uppercase;
+        outline: none;
+        margin-top: 20px; /* 텍스트와 버튼 사이에 간격 추가 */
+    }
+    @keyframes slideDown {
+        0% {
+            transform: translateY(-100%);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+
+    .new-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 200;
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+
+    .new-screen.slide-down {
+        animation: slideDown 2s forwards ease-out;
+        opacity: 1;
+    }
+
+    .new-content {
+        color: white;
+        font-size: 2rem;
+        text-align: center;
+    }
+    #stunoverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        display: none;
+        animation: borderFadeIn 3s forwards, flashBangEffect 0.5s forwards 3s, visionBlur 2s forwards 3.5s, fadeBackIn 3s forwards 5.5s;
+        backdrop-filter: blur(20px); /* 섬광 후 배경 흐림 */
+    }
+
+    /* 테두리부터 어두워지는 효과 */
+    @keyframes borderFadeIn {
+        0% {
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+            background-color: rgba(0, 0, 0, 0);
+        }
+        50% {
+            box-shadow: 0 0 100px 100px rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        100% {
+            box-shadow: 0 0 100px 200px rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+    }
+
+    /* 섬광탄 효과 */
+    @keyframes flashBangEffect {
+        0% {
+            background-color: rgba(255, 255, 255, 0); /* 섬광 전 상태 */
+        }
+        50% {
+            background-color: rgba(255, 255, 255, 1); /* 강한 푸른 섬광 */
+        }
+        100% {
+            background-color: rgba(255, 255, 255, 0); /* 섬광 후 사라짐 */
+        }
+    }
+
+    /* 시야 흐릿해지는 효과 */
+    @keyframes visionBlur {
+        0% {
+            filter: blur(5px) brightness(1);
+        }
+        100% {
+            filter: blur(10px) brightness(0.5); /* 흐릿하고 어두운 시야 */
+        }
+    }
+
+    /* 서서히 시야가 돌아오는 효과 */
+    @keyframes fadeBackIn {
+        0% {
+            filter: blur(10px) brightness(0.5); /* 스턴 중 흐릿한 화면 */
+        }
+        100% {
+            filter: blur(0) brightness(1); /* 스턴 해제 후 정상 시야 */
+        }
+    }
+
+    /* 남은 시간 표시 */
+    #countdown-timer {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        font-size: 1rem;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 5px 10px;
+        border-radius: 5px;
+        z-index: 1100;
+        display: none; /* 스턴 걸릴 때 나타남 */
+    }
+
+    @keyframes insetGlowEffect {
+        0% {
+            box-shadow: inset 0 0 0 0 rgba(255, 0, 0, 0.5);
+        }
+        50% {
+            box-shadow: inset 0 0 20px 10px rgba(255, 0, 0, 1);
+        }
+        100% {
+            box-shadow: inset 0 0 0 0 rgba(255, 0, 0, 0.5);
+        }
+    }
+
+    .glowing-inset-border {
+        animation: insetGlowEffect 1.5s infinite;
+        border: 5px solid rgba(255, 0, 0, 0.5); /* 기본 테두리 */
+    }
+
+    .debuff-box {
+        background-color: rgba(255, 0, 0, 0.9); /* 반투명한 빨간 배경 */
+        color: white;
+        padding: 10px;
+        border-radius: 14px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center; /* 도넛형 타이머와 텍스트를 중앙 정렬 */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* 화면 중앙으로 이동 */
+        z-index: 1000; /* 다른 요소 위에 표시 */
+        transition: opacity 1s ease-in-out; /* 서서히 사라지게 */
+    }
+
+    .hidden {
+        opacity: 0; /* opacity 0으로 서서히 사라지도록 */
+    }
+
+
+    .debuff-timer {
+        font-size: 0.9rem;
+        margin-left: 15px;
+    }
+
+    .circle-container {
+        position: relative;
+        width: 50px;
+        height: 50px;
+    }
+
+    .circle-background, .circle-foreground {
+        fill: none;
+        stroke-width: 10;
+    }
+
+    .circle-background {
+        stroke: rgba(255, 255, 255, 0.2); /* 회색 배경 원 */
+    }
+
+    .circle-foreground {
+        stroke: white; /* 흰색 진행 원 */
+        stroke-linecap: round;
+        transform: rotate(-90deg); /* 진행을 상단에서 시작 */
+        transform-origin: 50% 50%;
+        transition: stroke-dashoffset 0.1s linear; /* 1초 간격으로 부드럽게 줄어들도록 설정 */
+    }
+    .skill-bar {
+    display: flex;
+    flex-direction: row;  /* 가로로 정렬 */
+    align-items: center;  /* 요소들을 세로 가운데 정렬 */
+    justify-content: center;  /* 부모 안에서 가로 가운데 정렬 */
+    color: white;
+    text-align: center;  /* 텍스트가 중앙 정렬되도록 */
+    gap: 20%;  /* 요소들 간의 간격 */
+}
+
+.skill-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;  /* 가로 가운데 정렬 */
+    justify-content: center;  /* 세로 가운데 정렬 */
+    color: white;
+    text-align: center; /* 텍스트가 중앙 정렬되도록 */
+    
+}
+.skill-text{
+    margin-top: -20px;
+    font-size: 14px;
+
+}
+.skill-subtext{
+    font-size: 10px;
+    color: gray;
+}
+        .skill-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #35393F;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 6px;
+            transition: 0.6s ease-in-out;
+            cursor: pointer;
+        }
+        .skill-icon:hover{
+            background-color: #FFFFFF;
+        }
+
+        .skill-icon:hover img {
+    filter: brightness(0.2) sepia(1) saturate(0) hue-rotate(0deg); /* 회색으로 변경 */
+}
+        .skill-icon img {
+            transition: filter 0.3s ease;
+            width: 25px;
+            height: 25px;
+        }
+
+        /* 하단에 원형 상태 표시 */
+        .status-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px; /* 원 사이의 간격 조정 */
+            margin-bottom: 30px; /* 텍스트와 원 사이의 간격 */
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+            </style>
+    </head>
+    <body>
+        <div id="stunoverlay">
+            <div id="countdown-timer" style="font-size: 2rem; color: white;">Stun ends in: 5s</div>
+        </div>
+        
+        <div id="roundendScreen" class="roundend-transition">
+            <div class="subtext">SHAKE UP THE CODE.</div>
+
+            <div id="resultText" class="win"></div>
+        </div>
+
+
+
+
+
+
+    
+        <div class="container">
+            <div class="problem-section">
+                <div id="debuff-container" style="position: fixed; top: 10px; left: 10px; z-index: 1000;">
+
+
+                </div>
+
+                <div class="problemtitle">
+                    <img src="../static/asset/logo_casual.svg" width="16px">
+                    <span id="problem-title">이러저러한 이름</span>
+                </div>
+                <div class="problemtitlesource">
+                    <span id="problem-source">이러저러한 출처</span>
+                </div>
+                <hr>
+                <div class="problemintitle">문제<br>
+                    <span id="problem-description">이러저러하고 이러저러한 문제이다</span>
+                </div>
+                <div class="problemintitle">입력<br>
+                    <span id="problem-input-format">이러저러한 입력이 이러저러한 형식으로 들어온다</span>
+                </div>
+                <div class="problemintitle">출력<br>
+                    <span id="problem-output-format">이러저러한 출력이 이러저러한 형식으로 나간다</span>
+                </div>
+                <div class="problemintitle">테스트케이스<br>
+                    <span id="test-cases">
+                        <div class="problemintitle" style="font-size: 14px;">테스트케이스 1:<br></div>
+                        <div class="testcase-container">
+                            <div class="testcase-display">
+                                <div class="testcase-title">예제 입력</div>
+                                <div class="testcase-content input-content">이러저러한 입력</div>
+                            </div>
+                            <div class="testcase-display">
+                                <div class="testcase-title">예제 출력</div>
+                                <div class="testcase-content output-content">깔@쌈한 출력</div>
+                            </div>
+                        </div>
+                    </span>
+                </div>
+                <div class="problemintitle">추가 조건<br>
+                    <span id="problem-additional-info">
+                        이 문제에는 이러저러한 것에 대한 이러저러한 추가 조건이 있다.<br>
+                        메모리 조건은 이러저러하고, 시간 조건은 이러저러하다.
+                    </span>
+                </div>
+                <hr style="margin-top: 30px;">
+                <div class="problemintitle">정보<br>
+                    <span>  
+                        <span class="difficulty" id="problem-difficulty">난이도 : ~~</span><br>
+                        <span class="source" id="problem-source-detail">출처: ~~</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="editor-section">
+
+                <div class="editor-area">
+                    <div class="txt-head">
+                        <div class="rival">
+                            <span>VS</span>
+                            <span id="opponent-player">Opponent player</span>
+                        </div>
+                        <div class="right-icons">
+                            <button>Selected : </button>
+                            <select class="dropdown" id="language-selector">
+                                <option value="text/x-csrc">C</option>
+                                <option value="text/x-python">Python</option>
+                                <option value="text/x-c++src">C++</option>
+                                <option value="text/x-java">Java</option>
+                            </select>
+                            <button onclick="runCode()">Test</button>
+                            <button id="submit-all" onclick="handleSubmit()">Submit</button>
+                        </div>
+                    </div>
+                    <textarea id="code-editor">
+    int main()
+    {
+        int a,b;
+        scanf("%d %d",&a,&b);
+        printf("%d",a+b);
+        return 0;
+    }
+                    </textarea>
+                    
+                <div class="console-head">
+                    <div class="console-head-inner">
+                        <div style="display: flex;">
+                            <img src="../static/asset/Xpingame.svg" width="20px">
+                            <div class="xp">170</div>
+                            <div class="xpadd">token added at win</div>
+                        </div>
+                        <div class="round-container">
+                            <span class="status win">W</span>
+                            <span class="status lose">L</span>
+                            <span class="status win">W</span>
+                            <span class="status lose">L</span>
+                            <span class="status miss">M</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="console-area">
+                    <div class="consolemenu-menu">
+                        <span class="consolemenu-item active">MY OUTPUT</span>
+                        <span class="consolemenu-item log">MY INPUT</span>
+                        <span class="consolemenu-item log">SUBMITTED LOG</span>
+                        <span class="consolemenu-item log">SKILLS</span>
+                    </div>
+                    <div class="consolemenu-content">
+                        <div class="active" id="my-output">console....</div>
+
+                        <div id="my-input">
+                            <textarea id="input-field" placeholder="Enter input here..."></textarea>
+                        </div>
+                        <div id="results-container">
+
+                        </div>
+                        <div id="skills">
+                            <div class="skill-bar">
+                                <div class="skill-item">
+                                    <div class="skill-icon" onclick="useSkill('disable_submit')">
+                                        <img src="../static/asset/lock.svg" alt="Imprison">
+                                    </div>
+                                    <div class="status-dots">
+                                        <div class="status-dot"></div>
+                                        <div class="status-dot"></div>
+                                        <div class="status-dot"></div>
+                                        <div class="status-dot"></div>
+                                        <div class="status-dot"></div>
+                                    </div>
+                                    <div class="skill-text">Lockdown</div>
+                                    <div class="skill-subtext">Lock down opponent's submit/runcode</div>
+                                </div>
+                                
+                                <!-- 두 번째 스킬 -->
+                                <div class="skill-item">
+                                    <div class="skill-icon" onclick="useSkill('disable_typing')">
+                                        <img src="../static/asset/flashbang.svg" alt="Fire">
+                                    </div>
+                                    <div class="status-dots">
+                                        <div class="status-dot"></div>
+                                        <div class="status-dot"></div>
+                                        <div class="status-dot"></div>
+                                        <div class="status-dot"></div>
+                                        <div class="status-dot"></div>
+                                    </div>
+                                    <div class="skill-text">Flashbang</div>
+                                    <div class="skill-subtext">Flash enemy and stun for short time</div>
+                                </div>
+                                
+                            </div>
+
+                     </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/material-darker.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/clike/clike.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.6/addon/edit/closebrackets.min.js"></script>
+        <script src="../static/script.js"></script>
+
+        <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+        <script>
+
+
+
+
+
+
+
+
+
+
+
+var socket = io.connect('http://127.0.0.1:5000');
+        
+            // 페이지가 로드될 때 사용자 ID를 입력받음
+            var client_id = prompt("Please enter your ID:");
+        
+            if (client_id) {
+                socket.emit('register', { client_id: client_id });
+                alert("You have entered ID: " + client_id);
+            }
+            const submitlockdowntime = 20;
+
+            // 스킬 사용 함수, 스킬 타입을 인자로 받아서 서버로 전송
+    function useSkill(skillType) {
+        socket.emit('use_skill', { sender_id: client_id, skill_type: skillType });
+    }
+
+    // 서버에서 수신한 스킬 효과를 처리하는 부분
+    socket.on('skill_effect', function(data) {
+        if (data.skill === 'disable_typing' && data.status === 'active') {
+            // Disable typing effect
+            const stunOverlay = document.getElementById('stunoverlay');
+            const countdownTimer = document.getElementById('countdown-timer');
+            stunOverlay.style.display = 'block';
+            countdownTimer.style.display = 'block';
+            
+            let stunDuration = 5; // 5 seconds duration
+            countdownTimer.textContent = `Stun  : ${stunDuration}s`;
+
+            const countdownInterval = setInterval(() => {
+                stunDuration--;
+                if (stunDuration > 0) {
+                    countdownTimer.textContent = `Stun ends in: ${stunDuration}s`;
+                } else {
+                    clearInterval(countdownInterval);
+                    stunOverlay.style.display = 'none';
+                    countdownTimer.style.display = 'none';
+                }
+            }, 1000); // 1 second interval
+
+        } else if (data.skill === 'disable_submit' && data.status === 'active') {
+            // 화면 전체에 테두리 효과를 주기 위해 body에 클래스를 추가
+            const bodyElement = document.body;
+            bodyElement.classList.add('glowing-inset-border');
+            
+            // 제출 버튼을 비활성화
+            const submitButton = document.getElementById('submit-all');
+            submitButton.disabled = true;  // 제출 버튼 비활성화
+            submitButton.style.opacity = 0.5;  // 시각적으로도 비활성화된 상태로 변경
+
+            // 테스트 버튼도 비활성화
+            const testButton = document.querySelector("button[onclick='runCode()']");
+            testButton.disabled = true;  // 테스트 버튼 비활성화
+            testButton.style.opacity = 0.5;  // 시각적으로 비활성화된 상태로 변경
+
+            let disableDuration = submitlockdowntime; // 5초 동안 효과 지속
+            setTimeout(() => {
+                // 5초 후 테두리 효과와 제출 및 테스트 제한 해제
+                bodyElement.classList.remove('glowing-inset-border');
+                
+                // 제출 버튼 다시 활성화
+                submitButton.disabled = false;
+                submitButton.style.opacity = 1;
+
+                // 테스트 버튼 다시 활성화
+                testButton.disabled = false;
+                testButton.style.opacity = 1;
+            }, disableDuration * 1000);
+        }
+    });
+
+
+
+
+
+
+
+
+            // 서버에서 'test_result_notification' 메시지를 수신할 때 호출되는 함수
+            socket.on('test_result_notification', function(data) {
+                console.log('Notification received: ', data.message);
+                
+                // 메시지가 "You Won!"이면 승리 애니메이션, "You Lose!"이면 패배 애니메이션 실행
+                if (data.message === "You Won!") {
+                    showRoundEndEffect(true);  // 승리 애니메이션
+                } else if (data.message === "You Lose!") {
+                    showRoundEndEffect(false);  // 패배 애니메이션
+                }
+            });
+        
+            function showRoundEndEffect(isWin) {
+        const roundEndScreen = document.getElementById('roundendScreen');
+        const resultText = document.getElementById('resultText');
+        const text = isWin ? "ROUND SECURED" : "ROUND LOST";
+        
+        // 기존 클래스 제거
+        resultText.classList.remove('win', 'lose', 'active', 'exit');
+        
+        // 승리/패배에 따른 클래스 설정
+        resultText.classList.add(isWin ? 'win' : 'lose');
+        
+        // 텍스트 설정 및 애니메이션 적용
+        resultText.innerHTML = '';
+        text.split('').forEach((char, index) => {
+            const span = document.createElement('span');
+            if (char === ' ') {
+                span.classList.add('space'); // 공백을 위한 클래스 추가
+            } else {
+                span.textContent = char;
+                span.classList.add('letter');
+                span.style.animationDelay = `${index * 0.1}s`; // 지연 시간 설정
+            }
+            resultText.appendChild(span);
+        });
+        
+        // 카운트다운 요소 추가
+        const countdownElement = document.createElement('div');
+        countdownElement.id = 'countdown';
+        countdownElement.style.fontSize = '2rem';
+        countdownElement.style.color = '#fff';
+        countdownElement.style.marginTop = '20px';
+        resultText.appendChild(countdownElement);
+
+        // 전환 효과 트리거 및 z-index 변경
+        roundEndScreen.style.display = 'flex'; // 다시 보이게 설정
+        roundEndScreen.classList.add('active');
+        roundEndScreen.style.zIndex = '100'; // z-index 값을 100으로 설정
+
+        // 4초 카운트다운
+        let countdown = 4;
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            if (countdown < 0) {
+                clearInterval(countdownInterval);
+                hideRoundEndEffect(); // 4초 후 화면 숨기기
+            }
+        }, 1000);
+    }
+
+    // 새로운 화면이 위에서 슬라이드되면서 내려오는 효과
+    function hideRoundEndEffect() {
+        const roundEndScreen = document.getElementById('roundendScreen');
+        const resultText = document.getElementById('resultText');
+        const countdownElement = document.getElementById('countdown');
+        
+        // 새로운 화면 생성
+        const newScreen = document.createElement('div');
+        newScreen.classList.add('new-screen');
+        newScreen.innerHTML = "<div class='new-content'>New Screen Content</div>";
+        document.body.appendChild(newScreen);
+        
+        // 카운트다운 요소 제거
+        if (countdownElement) {
+            countdownElement.remove();
+        }
+
+        // 슬라이드 애니메이션 시작
+        newScreen.classList.add('slide-down');
+
+        // 기존 화면은 서서히 사라짐
+        setTimeout(() => {
+            roundEndScreen.style.zIndex = '-1'; // z-index 복원
+            roundEndScreen.style.display = 'none'; // 기존 화면 숨기기
+        }, 2000); // 슬라이드 애니메이션이 완료되면 기존 화면 숨기기
+    }
+
+
+
+
+
+    let activeDebuffs = {}; // 현재 활성화된 디버프들을 관리할 객체
+
+    socket.on('skill_effect', function(data) {
+        if (data.status === 'active') {
+            const debuffName = data.skill;
+
+            // 디버프가 이미 활성화되어 있다면 무시
+            if (activeDebuffs[debuffName]) return;
+
+            let debuffDuration;
+            
+            // 디버프 유형에 따라 지속 시간 설정 (제출 금지는 20초, 섬광탄은 5초)
+            if (debuffName === 'disable_submit') {
+                debuffDuration = submitlockdowntime; // 제출 금지 시간 20초
+            } else if (debuffName === 'disable_typing') {
+                debuffDuration = 5; // 섬광탄 효과 시간 5초
+            }
+
+            // 새로운 디버프 상자 생성
+            const debuffBox = document.createElement('div');
+            debuffBox.classList.add('debuff-box');
+            debuffBox.id = `debuff-${debuffName}`;
+            
+            // SVG를 사용한 도넛형 타이머
+            debuffBox.innerHTML = `
+                <div class="circle-container">
+                    <svg width="50" height="50">
+                        <circle class="circle-background" cx="25" cy="25" r="20"></circle>
+                        <circle class="circle-foreground" cx="25" cy="25" r="20" id="circle-${debuffName}"></circle>
+                    </svg>
+                </div>
+                <div class="debuff-timer">${debuffName.replace('_', ' ').toUpperCase()}</div>
+            `;
+            document.getElementById('debuff-container').appendChild(debuffBox);
+
+            let remainingTime = debuffDuration * 10; // 0.1초 단위로 관리 (ex. 200 * 0.1초 = 20초)
+            const initialDuration = remainingTime;
+
+            // 원형 진행 업데이트 함수
+            function updateCircle() {
+                const circle = document.getElementById(`circle-${debuffName}`);
+                const circumference = 2 * Math.PI * 20; // r=12이므로 원의 둘레
+                const offset = circumference - (remainingTime / initialDuration) * circumference;
+                circle.style.strokeDasharray = `${circumference} ${circumference}`;
+                circle.style.strokeDashoffset = offset;
+            }
+
+            // 처음에 전체 원 그리기
+            updateCircle();
+
+            // 디버프와 남은 시간을 0.1초마다 관리
+            activeDebuffs[debuffName] = setInterval(() => {
+                remainingTime--; // 0.1초 단위로 감소
+                updateCircle(); // 남은 시간에 따라 원형 타이머 업데이트
+
+                if (remainingTime <= 0) {
+                    // 시간이 다 되면 디버프 상자를 서서히 제거
+                    clearInterval(activeDebuffs[debuffName]);
+                    delete activeDebuffs[debuffName];
+
+                    // 서서히 사라지도록 hidden 클래스 추가
+                    const debuffBox = document.getElementById(`debuff-${debuffName}`);
+                    debuffBox.classList.add('hidden');
+
+                    // transition이 완료된 후 상자를 완전히 제거 (1초 후)
+                    setTimeout(() => {
+                        debuffBox.remove();
+                    }, 1000); // 1초 후에 완전히 삭제
+                }
+            }, 100); // 100ms 간격으로 업데이트 (0.1초마다)
+
+            // 디버프에 따른 화면 효과 (테두리 효과, 버튼 비활성화)
+            if (debuffName === 'disable_submit') {
+                const bodyElement = document.body;
+                bodyElement.classList.add('glowing-inset-border');
+
+                const submitButton = document.getElementById('submit-all');
+                const testButton = document.querySelector("button[onclick='runCode()']");
+                submitButton.disabled = true;
+                testButton.disabled = true;
+                submitButton.style.opacity = 0.5;
+                testButton.style.opacity = 0.5;
+
+                setTimeout(() => {
+                    bodyElement.classList.remove('glowing-inset-border');
+                    submitButton.disabled = false;
+                    testButton.disabled = false;
+                    submitButton.style.opacity = 1;
+                    testButton.style.opacity = 1;
+                }, debuffDuration * 1000); // 설정한 디버프 지속 시간 동안 유지
+            }
+        }
+    });
+
+
+
+        </script>
+        
+
+        
+
+    </body>
+    </html>
+
